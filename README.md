@@ -10,7 +10,7 @@ extends Node2D
 
 
 func _ready() -> void:
-    var task = dispatcher.run(self, "_heavy_task", [1, 2])
+    var task = $TaskDispatcher.run(self, "_heavy_task", [1, 2])
     task.connect("finished", self, "_on_task_finished")
 
 func _heavy_task(a: int, b: int) -> int:
