@@ -5,7 +5,6 @@ Addon that allows you to offload tasks to another thread. Unless you know what y
 - `finished` signal renamed to `completed` for sake of compatibility with GDScriptFunctionState.
 - Multiple workers, if you don't specify how many it will automatically launch one worker for each available thread.
 - Using `ConcurrentQueue` instead of `Queue`.
-- Callback argument is now the task itself, not the value. You can get the value using `task.get_result()`.
 
 ## Task
 Small class that is similar to a Promise/Task/Future in other languages. Each Task has a state that can be either PENDING or COMPLETED. You can access the state using the method `get_state()` and you can obtain the result value (that can be an error) using the method `get_result()`. Tasks will emit a signal called `completed(task)` when the task is succeed or fail.
@@ -30,8 +29,8 @@ func _ready() -> void:
 func _heavy_task(a: int, b: int) -> int:
     return a + b
 
-func _on_task_completed(task: Task) -> void:
-    print(task.get_result())
+func _on_task_completed(result: int) -> void:
+    print(result)
 ```
 
 Using *res://addons/task_dispatcher/task_dispatcher.gd* (not a node).
@@ -70,7 +69,7 @@ func _do_tasks_async() -> void:
         var task := _dispatcher.run(self, "_no_io_heavy_task", [i])
         task.connect("completed", self, "_on_heavy_task_completed")
 
-func _on_all_tasks_completed(task) -> void:
+func _on_all_tasks_completed(_void) -> void:
     print(str(OS.get_ticks_msec() - _start) + "ms")
 
 func _no_io_heavy_task(num: int) -> int:
@@ -79,7 +78,7 @@ func _no_io_heavy_task(num: int) -> int:
         x = randi() % num * num
     return x
 
-func _on_heavy_task_completed(task: Task) -> void:
+func _on_heavy_task_completed(_void) -> void:
     _expected -= 1
     if _expected == 0: _all_tasks.complete()
 

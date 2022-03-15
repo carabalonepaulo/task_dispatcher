@@ -1,7 +1,7 @@
 extends Reference
 
 
-signal completed(task)
+signal completed(result)
 
 
 enum State { PENDING, COMPLETED }
@@ -14,7 +14,7 @@ var _result = null
 func complete(value = null) -> void:
     _result = value
     _state = State.COMPLETED
-    emit_signal("completed", self)
+    emit_signal("completed", value)
 
 func get_state() -> int: return _state
 
